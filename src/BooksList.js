@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class BooksList extends Component {
   render() {
-    const { books } = this.props;
+    const { books, updateBookShelf } = this.props;
     return (
       <div className="bookshelf-books">
         <ol className="books-grid">
@@ -17,7 +17,12 @@ class BooksList extends Component {
                     }}
                   ></div>
                   <div className="book-shelf-changer">
-                    <select>
+                    <select
+                      value={book.shelf ? book.shelf : "none"}
+                      onChange={event =>
+                        updateBookShelf(event.target.value, book)
+                      }
+                    >
                       <option value="book" disabled>
                         Move to...
                       </option>

@@ -111,8 +111,10 @@ body,
   background-repeat: no-repeat;
   background-size: 28px;
   font-size: 0;
-  border: none;
+  /*border: none;*/
   outline: none;
+  border-style: outset;
+  border-color: buttonface;
 }
 
 button:active {

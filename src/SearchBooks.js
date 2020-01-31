@@ -8,16 +8,31 @@ class SearchBooks extends Component {
     books: []
   };
   findBook = valueChanged => {
-    console.log(valueChanged);
     if (valueChanged) {
       BooksAPI.search(valueChanged).then(books => {
-        console.log(books);
+        if (books) {
+          books.forEach(element => {
+            console.log(element.shelf);
+          });
+        }
+
         this.setState(() => ({
           books: books
         }));
       });
     }
   };
+
+  updateBookShelf = (shelf, bookToUpdate) => {
+    this.setState(state => {
+      state.books.find(book => book.id === bookToUpdate.id).shelf = shelf;
+      return {
+        books: state.books
+      };
+    });
+    BooksAPI.update(bookToUpdate, shelf);
+  };
+
   render() {
     return (
       <div className="search-books">
@@ -33,7 +48,10 @@ class SearchBooks extends Component {
         </div>
         <div className="search-books-results">
           {this.state.books.length > 0 && (
-            <BooksList books={this.state.books}></BooksList>
+            <BooksList
+              books={this.state.books}
+              updateBookShelf={this.updateBookShelf}
+            ></BooksList>
           )}
         </div>
       </div>

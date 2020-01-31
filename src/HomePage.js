@@ -1,10 +1,33 @@
 import React, { Component } from "react";
 import BooksList from "./BooksList";
+import * as BooksAPI from "./BooksAPI";
 import { Link } from "react-router-dom";
 
 class HomePage extends Component {
+  state = {
+    books: []
+  };
+
+  componentDidMount() {
+    BooksAPI.getAll().then(books => {
+      this.setState(() => ({
+        books: books
+      }));
+    });
+  }
+
+  updateBookShelf = (shelf, bookToUpdate) => {
+    this.setState(state => {
+      state.books.find(book => book.id === bookToUpdate.id).shelf = shelf;
+      return {
+        books: state.books
+      };
+    });
+    BooksAPI.update(bookToUpdate, shelf);
+  };
+
   render() {
-    const { books } = this.props;
+    const { books } = this.state;
     const currentlyReadingBooks = books.filter(
       book => book.shelf === "currentlyReading"
     );
@@ -19,15 +42,24 @@ class HomePage extends Component {
           <div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Currently Reading</h2>
-              <BooksList books={currentlyReadingBooks}></BooksList>
+              <BooksList
+                books={currentlyReadingBooks}
+                updateBookShelf={this.updateBookShelf}
+              ></BooksList>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Want to Read</h2>
-              <BooksList books={wantToReadBooks}></BooksList>
+              <BooksList
+                books={wantToReadBooks}
+                updateBookShelf={this.updateBookShelf}
+              ></BooksList>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Read</h2>
-              <BooksList books={readBooks}></BooksList>
+              <BooksList
+                books={readBooks}
+                updateBookShelf={this.updateBookShelf}
+              ></BooksList>
             </div>
           </div>
         </div>
