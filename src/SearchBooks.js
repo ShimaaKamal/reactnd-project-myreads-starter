@@ -9,18 +9,33 @@ class SearchBooks extends Component {
   };
   findBook = valueChanged => {
     if (valueChanged) {
-      BooksAPI.search(valueChanged).then(books => {
-        if (books) {
-          books.forEach(element => {
-            console.log(element.shelf);
-          });
+      BooksAPI.search(valueChanged).then(result => {
+        if (!result.error) {
+          this.setState(() => ({
+            books: result
+          }));
+        } else {
+          this.clearBooksList();
         }
-
-        this.setState(() => ({
-          books: books
-        }));
       });
+    } else {
+      this.clearBooksList();
     }
+  };
+
+  clearBooksList = () => {
+    this.setState(() => ({
+      books: []
+    }));
+  };
+
+  updateBooksShelfWithUserbooksShelf = (books, userBooks) => {
+    books.forEach(book => {
+      const foundedBook = userBooks.find(userBook => userBook.id === book.id);
+      if (foundedBook) {
+        book.shelf = foundedBook.shelf;
+      }
+    });
   };
 
   updateBookShelf = (shelf, bookToUpdate) => {
@@ -30,10 +45,15 @@ class SearchBooks extends Component {
         books: state.books
       };
     });
-    BooksAPI.update(bookToUpdate, shelf);
+    this.props.onUpdate(shelf, bookToUpdate);
   };
 
   render() {
+    const { userBooks } = this.props;
+    const { books } = this.state;
+
+    this.updateBooksShelfWithUserbooksShelf(books, userBooks);
+
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -47,7 +67,7 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          {this.state.books.length > 0 && (
+          {this.state.books && (
             <BooksList
               books={this.state.books}
               updateBookShelf={this.updateBookShelf}

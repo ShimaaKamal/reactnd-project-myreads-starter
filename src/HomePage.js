@@ -1,38 +1,18 @@
 import React, { Component } from "react";
 import BooksList from "./BooksList";
-import * as BooksAPI from "./BooksAPI";
 import { Link } from "react-router-dom";
 
 class HomePage extends Component {
-  state = {
-    books: []
-  };
-
-  componentDidMount() {
-    BooksAPI.getAll().then(books => {
-      this.setState(() => ({
-        books: books
-      }));
-    });
-  }
-
-  updateBookShelf = (shelf, bookToUpdate) => {
-    this.setState(state => {
-      state.books.find(book => book.id === bookToUpdate.id).shelf = shelf;
-      return {
-        books: state.books
-      };
-    });
-    BooksAPI.update(bookToUpdate, shelf);
-  };
-
   render() {
-    const { books } = this.state;
-    const currentlyReadingBooks = books.filter(
+    const { userBooks, onUpdate } = this.props;
+
+    const currentlyReadingBooks = userBooks.filter(
       book => book.shelf === "currentlyReading"
     );
-    const readBooks = books.filter(book => book.shelf === "read");
-    const wantToReadBooks = books.filter(book => book.shelf === "wantToRead");
+    const readBooks = userBooks.filter(book => book.shelf === "read");
+    const wantToReadBooks = userBooks.filter(
+      book => book.shelf === "wantToRead"
+    );
     return (
       <div className="list-books">
         <div className="list-books-title">
@@ -44,21 +24,21 @@ class HomePage extends Component {
               <h2 className="bookshelf-title">Currently Reading</h2>
               <BooksList
                 books={currentlyReadingBooks}
-                updateBookShelf={this.updateBookShelf}
+                updateBookShelf={onUpdate}
               ></BooksList>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Want to Read</h2>
               <BooksList
                 books={wantToReadBooks}
-                updateBookShelf={this.updateBookShelf}
+                updateBookShelf={onUpdate}
               ></BooksList>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Read</h2>
               <BooksList
                 books={readBooks}
-                updateBookShelf={this.updateBookShelf}
+                updateBookShelf={onUpdate}
               ></BooksList>
             </div>
           </div>
