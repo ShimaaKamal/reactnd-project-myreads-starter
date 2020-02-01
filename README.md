@@ -20,7 +20,7 @@ To get started testing the app:
 └── src
     ├── App.css # Styles for your app.
     ├── App.js # This is the root of the app. It calls getAll to get all books, and also render Homepage and SearchBooks
-	├── Homepage.js #  It is resposbible to render the 3 shelves of books and it takes books as a props
+    ├── Homepage.js #  It is resposbible to render the 3 shelves of books and it takes books as a props
     ├── SearchBooks.js # It is resposbible to render the search page with input field to enter author or title of book, it calls seacrh api to get the books, it takes books as a props from App.js to update the shelf of books returned by search api
 	├── BooksList.js # It is a common component which takes the books list and render the card of each book with title and author
     ├── App.test.js # Used for testing. Provided with Create React App.
